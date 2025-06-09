@@ -20,9 +20,21 @@ A Model Context Protocol (MCP) server that enables AI assistants to connect to b
 
 ## Installation
 
+### Quick Start (Recommended)
+
+The easiest way to use browser-connect-mcp is directly with npx - no installation required!
+
+### Global Installation
+
+```bash
+npm install -g browser-connect-mcp
+```
+
+### Development Installation
+
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/browser-connect-mcp.git
+git clone https://github.com/perception30/browser-connect-mcp.git
 cd browser-connect-mcp
 
 # Install dependencies
@@ -32,31 +44,21 @@ npm install
 npm run build
 ```
 
-## Usage
+## Quick Setup
 
-### 1. Start Chrome with Debugging
+### 1. Configure Claude Desktop
 
-```bash
-# macOS
-/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222
+Add to your Claude Desktop configuration file:
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
-# Linux
-google-chrome --remote-debugging-port=9222
-
-# Windows
-chrome.exe --remote-debugging-port=9222
-```
-
-### 2. Configure MCP Client
-
-Add to your MCP client configuration (e.g., Claude Desktop):
-
+**Using npx (Recommended - No Installation Required):**
 ```json
 {
   "mcpServers": {
     "browser-connect": {
-      "command": "node",
-      "args": ["/path/to/browser-connect-mcp/dist/index.js"],
+      "command": "npx",
+      "args": ["browser-connect-mcp"],
       "env": {
         "LOG_LEVEL": "info"
       }
@@ -65,23 +67,89 @@ Add to your MCP client configuration (e.g., Claude Desktop):
 }
 ```
 
-### 3. Available Tools
+**Using Global Installation:**
+```json
+{
+  "mcpServers": {
+    "browser-connect": {
+      "command": "browser-connect-mcp",
+      "env": {
+        "LOG_LEVEL": "info"
+      }
+    }
+  }
+}
+```
 
-#### `browser_list_tabs`
-List all available browser tabs.
+### 2. Restart Claude Desktop
+
+After updating the configuration, restart Claude Desktop to load the MCP server.
+
+### 3. Start Using Browser DevTools
+
+No manual Chrome launching needed! The MCP server handles everything:
+
+1. **Launch Chrome with debugging enabled:**
+   ```
+   Ask: "Launch a Chrome browser for debugging"
+   ```
+
+2. **Or connect to an existing Chrome instance:**
+   ```
+   Ask: "List available browser tabs"
+   ```
+
+3. **Connect to a tab and start debugging:**
+   ```
+   Ask: "Connect to the first tab and show me any errors"
+   ```
+
+## Available Tools
+
+### Browser Management
+
+#### `browser_launch`
+Launch a new Chrome browser with debugging enabled - no manual setup required!
 
 ```typescript
 // Example usage
-browser_list_tabs({ host: "localhost", port: 9222 })
+browser_launch({ 
+  executablePath: "/path/to/chrome" // Optional - auto-detected if not provided
+})
+```
+
+#### `browser_list_tabs`
+List all available browser tabs that can be debugged.
+
+```typescript
+// Example usage
+browser_list_tabs({ 
+  host: "localhost", // Optional, default: localhost
+  port: 9222        // Optional, default: 9222
+})
 ```
 
 #### `browser_connect`
-Connect to a specific browser tab for debugging.
+Connect to a specific browser tab to start capturing console and network data.
 
 ```typescript
 // Example usage
-browser_connect({ tabId: "FAB12E4567890", host: "localhost", port: 9222 })
+browser_connect({ 
+  tabId: "FAB12E4567890",
+  host: "localhost", // Optional
+  port: 9222        // Optional
+})
 ```
+
+#### `browser_disconnect`
+Disconnect from a browser tab and clear all captured data.
+
+```typescript
+// Example usage
+browser_disconnect({ tabId: "FAB12E4567890" })
+```
+
+### Console Debugging
 
 #### `console_search`
 Search console messages with filtering options.
@@ -92,9 +160,36 @@ console_search({
   tabId: "FAB12E4567890",
   pattern: "error",
   level: ["error", "warn"],
-  limit: 50
+  limit: 50,
+  regex: false  // Set to true for regex patterns
 })
 ```
+
+#### `console_advanced_search`
+Advanced console search with pattern matching, correlation, and statistics.
+
+```typescript
+// Example usage
+console_advanced_search({
+  tabId: "FAB12E4567890",
+  patterns: {
+    include: ["error", "warning"],
+    exclude: ["debug"],
+    mode: "any"  // "any" for OR, "all" for AND
+  },
+  namedPatterns: {
+    errorCode: "Error:\\s+(\\d+)",
+    userId: "user[_-]?id[:\\s]+([\\w-]+)"
+  },
+  correlate: {
+    timeWindow: 5000,
+    fields: ["level"]
+  },
+  includeStats: true
+})
+```
+
+### Network Analysis
 
 #### `network_analyze`
 Analyze network requests with advanced filtering.
@@ -130,29 +225,7 @@ network_export_har({
 })
 ```
 
-#### `console_advanced_search`
-Advanced console search with pattern matching, correlation, and statistics.
-
-```typescript
-// Example usage
-console_advanced_search({
-  tabId: "FAB12E4567890",
-  patterns: {
-    include: ["error", "warning"],
-    exclude: ["debug"],
-    mode: "any"
-  },
-  namedPatterns: {
-    errorCode: "Error\\s+(\\d+)",
-    userId: "user[_-]?id[:\\s]+([\\w-]+)"
-  },
-  correlate: {
-    timeWindow: 5000,
-    fields: ["level"]
-  },
-  includeStats: true
-})
-```
+### AI-Powered Analysis
 
 #### `performance_profile`
 Advanced performance profiling with bottleneck detection and recommendations.
@@ -196,23 +269,61 @@ Intelligently analyze logs to find patterns, anomalies, and trends.
 // Example usage
 log_analyze({
   tabId: "FAB12E4567890",
-  includeAllInsights: false
+  includeAllInsights: false  // Set to true to see all insights
 })
+```
 
-## Examples
+## Common Workflows
+
+### Complete Debugging Session
+
+```
+You: "Launch Chrome and help me debug my web app at localhost:3000"
+
+Assistant will:
+1. browser_launch() - Start Chrome with debugging enabled
+2. browser_list_tabs() - Show available tabs
+3. browser_connect() - Connect to your app
+4. Start monitoring console and network automatically
+
+You: "Are there any errors?"
+
+Assistant will:
+- console_search() with level: ["error", "warn"]
+- Show you any errors found
+
+You: "What's causing the slow performance?"
+
+Assistant will:
+- performance_profile() - Analyze performance
+- network_analyze() with minDuration filter
+- Provide recommendations
+```
+
+### Quick Error Analysis
+
+```
+You: "Connect to my existing Chrome and check for security issues"
+
+Assistant will:
+1. browser_list_tabs() - Find your tabs
+2. browser_connect() - Connect to active tab
+3. security_scan() - Run security analysis
+4. error_correlate() - Find related issues
+5. Provide detailed report with fixes
+```
+
+## Detailed Examples
 
 ### Debug Failed API Calls
 
 ```
-AI: "Show me all failed API calls in the current tab"
+You: "Show me all failed API calls"
 
-1. browser_list_tabs()
-2. browser_connect({ tabId: "..." })
-3. network_analyze({ 
-     tabId: "...", 
-     urlPattern: "api/", 
-     statusRange: { min: 400, max: 599 } 
-   })
+The MCP will automatically:
+- Use network_analyze with statusRange: { min: 400, max: 599 }
+- Filter for API endpoints
+- Show error details and timing
 ```
 
 ### Find JavaScript Errors
@@ -311,20 +422,31 @@ AI: "Analyze the logs and give me insights about what's happening"
    })
 ```
 
-### Use AI Debugging Prompts
+## AI-Powered Debugging Prompts
+
+The MCP includes pre-built debugging prompts that guide the AI through common debugging scenarios:
+
+### Available Prompts
+
+- **find_javascript_errors** - Comprehensive JavaScript error detection and analysis
+- **debug_failed_api_calls** - Debug API failures with custom endpoint patterns
+- **analyze_slow_page_load** - Performance analysis for slow loading pages
+- **debug_memory_leaks** - Detect potential memory leaks from console patterns
+- **security_audit** - Basic security audit of console and network traffic
+- **debug_cors_issues** - Troubleshoot Cross-Origin Resource Sharing problems
+- **analyze_render_performance** - Analyze rendering and paint performance
+- **debug_websocket_issues** - Debug WebSocket connection problems
+
+### Using Prompts
+
+Simply ask Claude about your debugging need, and it will automatically use the appropriate prompt:
 
 ```
-AI: "Show me available debugging prompts"
+You: "Help me debug CORS issues"
+Assistant: *Uses debug_cors_issues prompt to guide the analysis*
 
-The server provides pre-built prompts for common debugging scenarios:
-- find_javascript_errors
-- debug_failed_api_calls
-- analyze_slow_page_load
-- debug_memory_leaks
-- security_audit
-- debug_cors_issues
-- analyze_render_performance
-- debug_websocket_issues
+You: "Check if there are any memory leaks"
+Assistant: *Uses debug_memory_leaks prompt to search for patterns*
 ```
 
 ## Development
@@ -359,12 +481,27 @@ browser-connect-mcp/
 └── package.json
 ```
 
+## Troubleshooting
+
+### Chrome won't launch
+- Ensure Chrome is installed in the default location
+- Or provide the path: `browser_launch({ executablePath: "/path/to/chrome" })`
+
+### Can't connect to tabs
+- Make sure Chrome was launched with `--remote-debugging-port=9222`
+- Or use `browser_launch()` to let the MCP handle it automatically
+
+### No data appearing
+- Ensure you've connected to a tab using `browser_connect()`
+- Check that the website is generating console/network activity
+- Try refreshing the page after connecting
+
 ## Security Considerations
 
 - Browser debugging port is only accessible from localhost by default
-- No data is persisted unless explicitly configured
-- All browser connections require explicit authorization
-- Sensitive data in console/network logs should be filtered
+- No data is persisted - all data is cleared on disconnect
+- Sensitive data in console/network logs can be detected by security_scan()
+- Use the security audit prompt for comprehensive security checks
 
 ## Contributing
 
