@@ -1,7 +1,7 @@
 {
   "name": "browser-connect-mcp",
-  "version": "0.3.0",
-  "description": "MCP server for browser DevTools integration - debug console logs and network requests with AI assistance",
+  "version": "0.4.0",
+  "description": "MCP server for browser DevTools and backend debugging - analyze console logs, network requests, and backend logs with AI assistance",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -32,7 +32,11 @@
     "ai-debugging",
     "claude",
     "anthropic",
-    "llm-tools"
+    "llm-tools",
+    "backend-debugging",
+    "log-analysis",
+    "nodejs-debugging",
+    "full-stack-debugging"
   ],
   "author": "Khaled Bin A Quadir",
   "license": "MIT",

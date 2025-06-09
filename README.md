@@ -490,6 +490,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 - 🔧 **[API Reference](./docs/NPM_DOCUMENTATION.md#api-reference)** - Detailed tool specifications
 - 💡 **[Examples](./docs/NPM_DOCUMENTATION.md#examples)** - Real-world usage examples
 - 🔌 **[API Usage Examples](./docs/API_USAGE_EXAMPLES.md)** - Detailed API request/response examples
+- 🐛 **[Backend Debugging Best Practices](./docs/BACKEND_DEBUGGING_BEST_PRACTICES.md)** - Guide for debugging backend applications
 
 ## Support
 
