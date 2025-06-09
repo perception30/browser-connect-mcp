@@ -1,7 +1,8 @@
 {
   "name": "browser-connect-mcp",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "MCP server for browser DevTools and backend debugging - analyze console logs, network requests, and backend logs with AI assistance",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {

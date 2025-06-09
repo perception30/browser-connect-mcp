@@ -1,4 +1,4 @@
-import { ConsoleMessage, NetworkRequest, NetworkResponse } from '../types';
+import { ConsoleMessage, NetworkRequest, NetworkResponse } from '../types/index.js';
 
 export interface SecurityIssue {
   id: string;

@@ -1,4 +1,4 @@
-import { NetworkRequest, NetworkResponse } from '../types';
+import { NetworkRequest, NetworkResponse } from '../types/index.js';
 
 interface HAREntry {
   startedDateTime: string;

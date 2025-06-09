@@ -2,8 +2,8 @@ import CDP from 'chrome-remote-interface';
 import { spawn, ChildProcess, exec } from 'child_process';
 import { tmpdir, platform } from 'os';
 import { accessSync } from 'fs';
-import logger from './logger';
-import { BrowserConnection, ConsoleMessage, NetworkRequest, NetworkResponse } from '../types';
+import logger from './logger.js';
+import { BrowserConnection, ConsoleMessage, NetworkRequest, NetworkResponse } from '../types/index.js';
 
 export class BrowserManager {
   private connections: Map<string, CDP.Client> = new Map();

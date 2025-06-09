@@ -1,4 +1,4 @@
-import { ConsoleMessage, SearchOptions, NetworkRequest, NetworkResponse, NetworkSearchOptions } from '../types';
+import { ConsoleMessage, SearchOptions, NetworkRequest, NetworkResponse, NetworkSearchOptions } from '../types/index.js';
 
 export function searchConsoleMessages(
   messages: ConsoleMessage[],

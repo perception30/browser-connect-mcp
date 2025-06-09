@@ -9,19 +9,19 @@ import {
   ListPromptsRequestSchema,
   GetPromptRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { BrowserManager } from './utils/browser-manager';
-import { searchConsoleMessages, searchNetworkRequests, analyzeNetworkPerformance } from './utils/search-utils';
-import { exportToHAR } from './utils/har-export';
-import { AdvancedMatcher, correlateMessages, calculateSearchStats } from './utils/advanced-search';
-import { PerformanceProfiler } from './utils/performance-profiler';
-import { debuggingPrompts, getPrompt, renderPrompt } from './prompts/debugging-prompts';
-import { ErrorCorrelator } from './utils/error-correlation';
-import { SecurityScanner } from './utils/security-scanner';
-import { IntelligentLogAnalyzer } from './utils/log-analyzer';
-import { BackendManager } from './utils/backend-manager';
-import { backendLogsStream } from './tools/backend/logs-stream';
-import { backendDebuggerAttach } from './tools/backend/debugger-attach';
-import logger from './utils/logger';
+import { BrowserManager } from './utils/browser-manager.js';
+import { searchConsoleMessages, searchNetworkRequests, analyzeNetworkPerformance } from './utils/search-utils.js';
+import { exportToHAR } from './utils/har-export.js';
+import { AdvancedMatcher, correlateMessages, calculateSearchStats } from './utils/advanced-search.js';
+import { PerformanceProfiler } from './utils/performance-profiler.js';
+import { debuggingPrompts, getPrompt, renderPrompt } from './prompts/debugging-prompts.js';
+import { ErrorCorrelator } from './utils/error-correlation.js';
+import { SecurityScanner } from './utils/security-scanner.js';
+import { IntelligentLogAnalyzer } from './utils/log-analyzer.js';
+import { BackendManager } from './utils/backend-manager.js';
+import { backendLogsStream } from './tools/backend/logs-stream.js';
+import { backendDebuggerAttach } from './tools/backend/debugger-attach.js';
+import logger from './utils/logger.js';
 
 // Initialize browser manager
 const browserManager = new BrowserManager();

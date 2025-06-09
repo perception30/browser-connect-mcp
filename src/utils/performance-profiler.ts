@@ -1,4 +1,4 @@
-import { NetworkRequest, NetworkResponse } from '../types';
+import { NetworkRequest, NetworkResponse } from '../types/index.js';
 
 export interface PerformanceMetrics {
   navigation: {
