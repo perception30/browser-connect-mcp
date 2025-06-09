@@ -4,24 +4,49 @@
   "description": "MCP server for browser DevTools integration - debug console logs and network requests with AI assistance",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "browser-connect-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE",
+    "package.json"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "test": "jest",
     "lint": "eslint src --ext .ts",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "mcp",
+    "model-context-protocol",
     "browser",
     "devtools",
     "debugging",
     "chrome-devtools-protocol",
-    "ai-debugging"
+    "ai-debugging",
+    "claude",
+    "anthropic",
+    "llm-tools"
   ],
-  "author": "",
+  "author": "Khaled Bin A Quadir",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/perception30/browser-connect-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/perception30/browser-connect-mcp/issues"
+  },
+  "homepage": "https://github.com/perception30/browser-connect-mcp#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.5.0",
     "chrome-remote-interface": "^0.33.0",

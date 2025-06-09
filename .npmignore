@@ -1,0 +1,30 @@
+# Source files
+src/
+*.ts
+!dist/**/*.d.ts
+
+# Development files
+.eslintrc.json
+.prettierrc
+tsconfig.json
+jest.config.js
+
+# Git and documentation
+.git/
+.gitignore
+MCP_BROWSER_DEBUGGING_RESEARCH.md
+CLAUDE.md
+
+# IDE
+.vscode/
+.idea/
+
+# Logs and temp files
+*.log
+npm-debug.log*
+.DS_Store
+
+# Test files
+__tests__/
+*.test.ts
+*.spec.ts
