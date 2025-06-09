@@ -1,58 +1,28 @@
 # Browser Connect MCP
 
-A Model Context Protocol (MCP) server that enables AI assistants to connect to browser DevTools for debugging web applications. This tool provides direct access to console logs, network requests, and performance metrics through a standardized interface.
+A Model Context Protocol (MCP) server that enables Claude to connect to browser DevTools for debugging web applications. Simply ask Claude to help debug your website, and it will handle all the technical details!
 
-## Features
+## What is this?
 
-- 🔌 **Browser Connection**: Connect to any Chrome/Chromium browser with debugging enabled
-- 📝 **Console Search**: Search and filter console messages by pattern, level, and time
-- 🌐 **Network Analysis**: Analyze HTTP requests/responses with advanced filtering
-- 📊 **Performance Metrics**: Get insights into network performance and bottlenecks
-- 🚀 **Real-time Monitoring**: Capture browser events as they happen
-- 🔍 **Pattern Matching**: Use regex patterns for powerful search capabilities
-- 📁 **HAR Export**: Export network traffic to HTTP Archive format
-- 🎯 **Advanced Search**: Named patterns, correlation, and search statistics
-- 🏎️ **Performance Profiling**: Detect bottlenecks and get optimization recommendations
-- 🤖 **AI-Powered Analysis**: Pre-built debugging prompts and intelligent insights
-- 🔗 **Error Correlation**: Automatically correlate errors across console and network
-- 🔒 **Security Scanning**: Detect vulnerabilities and security issues
-- 📈 **Log Intelligence**: Find patterns, anomalies, and trends in your logs
+Browser Connect MCP gives Claude the ability to:
+- 🚀 Launch Chrome with debugging enabled automatically
+- 🔍 Read console logs and errors from your web pages
+- 🌐 Monitor network requests and API calls
+- 📊 Analyze performance issues
+- 🔒 Scan for security vulnerabilities
+- 🤖 Provide intelligent debugging insights
 
-## Installation
+All through natural conversation - no coding required!
 
-### Quick Start (Recommended)
+## Quick Start
 
-The easiest way to use browser-connect-mcp is directly with npx - no installation required!
+### 1. Install via npx (Recommended - No Installation Required!)
 
-### Global Installation
+Add to your Claude Desktop configuration:
 
-```bash
-npm install -g browser-connect-mcp
-```
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`  
+**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
-### Development Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/perception30/browser-connect-mcp.git
-cd browser-connect-mcp
-
-# Install dependencies
-npm install
-
-# Build the project
-npm run build
-```
-
-## Quick Setup
-
-### 1. Configure Claude Desktop
-
-Add to your Claude Desktop configuration file:
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-
-**Using npx (Recommended - No Installation Required):**
 ```json
 {
   "mcpServers": {
@@ -67,7 +37,228 @@ Add to your Claude Desktop configuration file:
 }
 ```
 
-**Using Global Installation:**
+### 2. Restart Claude Desktop
+
+After saving the configuration, restart Claude Desktop to load the browser debugging capabilities.
+
+### 3. Start Debugging!
+
+Just talk to Claude naturally:
+
+```
+You: "Help me debug my website at localhost:3000"
+
+Claude: I'll help you debug your website. Let me launch Chrome with debugging enabled 
+and connect to it.
+
+[Claude launches Chrome and connects automatically]
+
+Now I'm connected to your browser. I can see the console messages and network traffic. 
+What specific issues are you experiencing?
+
+You: "The page is loading slowly"
+
+Claude: Let me analyze the performance of your page...
+
+[Claude automatically runs performance analysis]
+
+I found several performance issues:
+1. Large uncompressed images (3.2MB total)
+2. Render-blocking JavaScript in the header
+3. Multiple API calls that could be batched
+
+Would you like me to investigate any of these issues in detail?
+```
+
+## What Can You Ask Claude?
+
+### Debugging Requests
+
+- **"Launch Chrome and help me debug my website"**
+- **"Connect to my existing Chrome browser"**
+- **"Show me any JavaScript errors"**
+- **"Are there any failed API calls?"**
+- **"Why is my page loading slowly?"**
+- **"Check for security vulnerabilities"**
+- **"Find memory leaks"**
+- **"Debug CORS issues"**
+- **"Export network traffic for analysis"**
+
+### Performance Analysis
+
+- **"Analyze the performance of this page"**
+- **"Which requests are taking the longest?"**
+- **"Find performance bottlenecks"**
+- **"Show me the slowest API endpoints"**
+
+### Error Investigation
+
+- **"What errors are happening?"**
+- **"Find all TypeErrors in the console"**
+- **"Show me errors related to authentication"**
+- **"Are these errors related to each other?"**
+
+### Security Checks
+
+- **"Run a security scan"**
+- **"Check if any sensitive data is exposed"**
+- **"Look for security vulnerabilities"**
+- **"Are there any insecure requests?"**
+
+## Real-World Examples
+
+### Example 1: Debugging API Errors
+
+```
+You: "My app isn't working, can you help debug it?"
+
+Claude: I'll help you debug your app. Let me connect to your browser and see what's happening.
+
+[Automatically launches/connects to Chrome]
+
+I can see your application. Let me check for any errors...
+
+I found several issues:
+1. API calls to /api/user are returning 401 Unauthorized errors
+2. There are CORS errors when trying to access the payment service
+3. Several "undefined is not a function" errors in your React components
+
+The 401 errors suggest an authentication issue. Would you like me to:
+- Look at the request headers to check authentication tokens?
+- Find when the authentication errors started?
+- Check if there are any related console errors?
+```
+
+### Example 2: Performance Optimization
+
+```
+You: "Users are complaining the checkout page is slow"
+
+Claude: I'll analyze the checkout page performance. Let me connect to your browser and load the checkout page.
+
+[Connects and monitors the page load]
+
+Here's what I found analyzing your checkout page:
+
+Performance Issues:
+1. Initial page load: 4.3 seconds (should be under 3s)
+2. Largest Contentful Paint: 3.8 seconds
+3. Time to Interactive: 5.2 seconds
+
+Main bottlenecks:
+- Product images are not optimized (2.1MB total)
+- Stripe SDK loads synchronously, blocking render
+- 3 sequential API calls that could run in parallel
+
+Recommendations:
+1. Compress and lazy-load product images
+2. Load Stripe SDK asynchronously
+3. Parallelize the API calls
+
+Would you like me to show you the specific network requests causing delays?
+```
+
+### Example 3: Security Audit
+
+```
+You: "Can you check my app for security issues?"
+
+Claude: I'll run a comprehensive security scan on your application.
+
+[Automatically scans console logs and network traffic]
+
+Security Scan Results:
+
+⚠️ High Priority Issues:
+1. API keys exposed in console logs (GitHub API key found)
+2. User passwords visible in network requests (should use HTTPS)
+3. Missing security headers (CSP, X-Frame-Options)
+
+🔍 Medium Priority:
+1. Cookies without 'Secure' flag
+2. LocalStorage containing sensitive user data
+3. Mixed content warnings (HTTP resources on HTTPS page)
+
+✓ Good Security Practices Found:
+1. HTTPS enabled on main domain
+2. Authentication tokens expire appropriately
+3. Input validation on forms
+
+Would you like me to explain how to fix any of these issues?
+```
+
+## Common Debugging Workflows
+
+### Complete Debugging Session
+
+```
+You: "I need help debugging my React app"
+
+Claude will automatically:
+1. Launch Chrome with debugging enabled
+2. Navigate to your app
+3. Start monitoring console and network
+4. Provide insights on any issues found
+```
+
+### Quick Error Check
+
+```
+You: "Are there any errors on my website?"
+
+Claude will:
+1. Connect to your browser
+2. Search for all error-level messages
+3. Analyze error patterns
+4. Suggest fixes
+```
+
+### API Debugging
+
+```
+You: "Help me debug why my API calls are failing"
+
+Claude will:
+1. Monitor network traffic
+2. Identify failed requests
+3. Analyze request/response details
+4. Identify patterns in failures
+```
+
+## Features
+
+### 🔌 Browser Management
+- **Automatic Chrome Launch**: Claude launches Chrome with debugging enabled - no manual setup!
+- **Tab Discovery**: Find and connect to existing browser tabs
+- **Smart Connection**: Maintains connection throughout debugging session
+
+### 📝 Console Analysis
+- **Error Detection**: Automatically finds JavaScript errors
+- **Pattern Matching**: Search logs with intelligent patterns
+- **Error Correlation**: Links related errors together
+- **Smart Filtering**: Focus on relevant messages
+
+### 🌐 Network Monitoring
+- **Request Analysis**: Monitor all HTTP/HTTPS traffic
+- **Performance Metrics**: Identify slow requests
+- **Error Detection**: Find failed API calls
+- **HAR Export**: Export traffic for external analysis
+
+### 🤖 AI-Powered Insights
+- **Automatic Analysis**: Claude proactively identifies issues
+- **Root Cause Detection**: Find the source of cascading errors
+- **Performance Recommendations**: Get optimization suggestions
+- **Security Scanning**: Detect vulnerabilities automatically
+
+## Alternative Installation Methods
+
+### Global Installation
+
+```bash
+npm install -g browser-connect-mcp
+```
+
+Then update Claude Desktop config:
 ```json
 {
   "mcpServers": {
@@ -81,435 +272,66 @@ Add to your Claude Desktop configuration file:
 }
 ```
 
-### 2. Restart Claude Desktop
-
-After updating the configuration, restart Claude Desktop to load the MCP server.
-
-### 3. Start Using Browser DevTools
-
-No manual Chrome launching needed! The MCP server handles everything:
-
-1. **Launch Chrome with debugging enabled:**
-   ```
-   Ask: "Launch a Chrome browser for debugging"
-   ```
-
-2. **Or connect to an existing Chrome instance:**
-   ```
-   Ask: "List available browser tabs"
-   ```
-
-3. **Connect to a tab and start debugging:**
-   ```
-   Ask: "Connect to the first tab and show me any errors"
-   ```
-
-## Available Tools
-
-### Browser Management
-
-#### `browser_launch`
-Launch a new Chrome browser with debugging enabled - no manual setup required!
-
-```typescript
-// Example usage
-browser_launch({ 
-  executablePath: "/path/to/chrome" // Optional - auto-detected if not provided
-})
-```
-
-#### `browser_list_tabs`
-List all available browser tabs that can be debugged.
-
-```typescript
-// Example usage
-browser_list_tabs({ 
-  host: "localhost", // Optional, default: localhost
-  port: 9222        // Optional, default: 9222
-})
-```
-
-#### `browser_connect`
-Connect to a specific browser tab to start capturing console and network data.
-
-```typescript
-// Example usage
-browser_connect({ 
-  tabId: "FAB12E4567890",
-  host: "localhost", // Optional
-  port: 9222        // Optional
-})
-```
-
-#### `browser_disconnect`
-Disconnect from a browser tab and clear all captured data.
-
-```typescript
-// Example usage
-browser_disconnect({ tabId: "FAB12E4567890" })
-```
-
-### Console Debugging
-
-#### `console_search`
-Search console messages with filtering options.
-
-```typescript
-// Example usage
-console_search({
-  tabId: "FAB12E4567890",
-  pattern: "error",
-  level: ["error", "warn"],
-  limit: 50,
-  regex: false  // Set to true for regex patterns
-})
-```
-
-#### `console_advanced_search`
-Advanced console search with pattern matching, correlation, and statistics.
-
-```typescript
-// Example usage
-console_advanced_search({
-  tabId: "FAB12E4567890",
-  patterns: {
-    include: ["error", "warning"],
-    exclude: ["debug"],
-    mode: "any"  // "any" for OR, "all" for AND
-  },
-  namedPatterns: {
-    errorCode: "Error:\\s+(\\d+)",
-    userId: "user[_-]?id[:\\s]+([\\w-]+)"
-  },
-  correlate: {
-    timeWindow: 5000,
-    fields: ["level"]
-  },
-  includeStats: true
-})
-```
-
-### Network Analysis
-
-#### `network_analyze`
-Analyze network requests with advanced filtering.
-
-```typescript
-// Example usage
-network_analyze({
-  tabId: "FAB12E4567890",
-  urlPattern: "api/.*",
-  method: ["POST", "PUT"],
-  statusRange: { min: 400, max: 599 },
-  minDuration: 500,
-  limit: 100
-})
-```
-
-#### `network_performance`
-Get network performance statistics.
-
-```typescript
-// Example usage
-network_performance({ tabId: "FAB12E4567890" })
-```
-
-#### `network_export_har`
-Export network traffic to HAR (HTTP Archive) format for analysis in tools like Chrome DevTools.
-
-```typescript
-// Example usage
-network_export_har({ 
-  tabId: "FAB12E4567890",
-  includeResponseBodies: false 
-})
-```
-
-### AI-Powered Analysis
-
-#### `performance_profile`
-Advanced performance profiling with bottleneck detection and recommendations.
-
-```typescript
-// Example usage
-performance_profile({
-  tabId: "FAB12E4567890",
-  includeWaterfall: true,
-  includeRecommendations: true
-})
-```
-
-#### `error_correlate`
-Automatically correlate errors between console and network to find root causes.
-
-```typescript
-// Example usage
-error_correlate({
-  tabId: "FAB12E4567890",
-  timeWindow: 5000,
-  minSeverity: "medium"
-})
-```
-
-#### `security_scan`
-Scan for security vulnerabilities in console and network traffic.
-
-```typescript
-// Example usage
-security_scan({
-  tabId: "FAB12E4567890",
-  includeRecommendations: true
-})
-```
-
-#### `log_analyze`
-Intelligently analyze logs to find patterns, anomalies, and trends.
-
-```typescript
-// Example usage
-log_analyze({
-  tabId: "FAB12E4567890",
-  includeAllInsights: false  // Set to true to see all insights
-})
-```
-
-## Common Workflows
-
-### Complete Debugging Session
-
-```
-You: "Launch Chrome and help me debug my web app at localhost:3000"
-
-Assistant will:
-1. browser_launch() - Start Chrome with debugging enabled
-2. browser_list_tabs() - Show available tabs
-3. browser_connect() - Connect to your app
-4. Start monitoring console and network automatically
-
-You: "Are there any errors?"
-
-Assistant will:
-- console_search() with level: ["error", "warn"]
-- Show you any errors found
-
-You: "What's causing the slow performance?"
-
-Assistant will:
-- performance_profile() - Analyze performance
-- network_analyze() with minDuration filter
-- Provide recommendations
-```
-
-### Quick Error Analysis
-
-```
-You: "Connect to my existing Chrome and check for security issues"
-
-Assistant will:
-1. browser_list_tabs() - Find your tabs
-2. browser_connect() - Connect to active tab
-3. security_scan() - Run security analysis
-4. error_correlate() - Find related issues
-5. Provide detailed report with fixes
-```
-
-## Detailed Examples
-
-### Debug Failed API Calls
-
-```
-You: "Show me all failed API calls"
-
-The MCP will automatically:
-- Use network_analyze with statusRange: { min: 400, max: 599 }
-- Filter for API endpoints
-- Show error details and timing
-```
-
-### Find JavaScript Errors
-
-```
-AI: "Find all JavaScript errors in the console"
-
-1. console_search({ 
-     tabId: "...", 
-     level: ["error"], 
-     pattern: "TypeError|ReferenceError|SyntaxError",
-     regex: true 
-   })
-```
-
-### Performance Analysis
-
-```
-AI: "Which requests are taking more than 1 second?"
-
-1. network_analyze({ 
-     tabId: "...", 
-     minDuration: 1000 
-   })
-```
-
-### Export Network Traffic
-
-```
-AI: "Export the network traffic to HAR format for analysis"
-
-1. network_export_har({ 
-     tabId: "...",
-     includeResponseBodies: false
-   })
-```
-
-### Advanced Error Correlation
-
-```
-AI: "Find all related error messages within 5 seconds of each other"
-
-1. console_advanced_search({
-     tabId: "...",
-     patterns: { include: ["error", "exception"] },
-     correlate: { 
-       timeWindow: 5000,
-       fields: ["level"]
-     }
-   })
-```
-
-### Performance Bottleneck Detection
-
-```
-AI: "Analyze performance and find bottlenecks"
-
-1. performance_profile({
-     tabId: "...",
-     includeWaterfall: true,
-     includeRecommendations: true
-   })
-```
-
-### Find Related Errors
-
-```
-AI: "Find all errors that might be related to each other"
-
-1. error_correlate({
-     tabId: "...",
-     timeWindow: 5000,
-     minSeverity: "low"
-   })
-```
-
-### Security Vulnerability Check
-
-```
-AI: "Check for security issues in the application"
-
-1. security_scan({
-     tabId: "...",
-     includeRecommendations: true
-   })
-```
-
-### Intelligent Log Analysis
-
-```
-AI: "Analyze the logs and give me insights about what's happening"
-
-1. log_analyze({
-     tabId: "...",
-     includeAllInsights: false
-   })
-```
-
-## AI-Powered Debugging Prompts
-
-The MCP includes pre-built debugging prompts that guide the AI through common debugging scenarios:
-
-### Available Prompts
-
-- **find_javascript_errors** - Comprehensive JavaScript error detection and analysis
-- **debug_failed_api_calls** - Debug API failures with custom endpoint patterns
-- **analyze_slow_page_load** - Performance analysis for slow loading pages
-- **debug_memory_leaks** - Detect potential memory leaks from console patterns
-- **security_audit** - Basic security audit of console and network traffic
-- **debug_cors_issues** - Troubleshoot Cross-Origin Resource Sharing problems
-- **analyze_render_performance** - Analyze rendering and paint performance
-- **debug_websocket_issues** - Debug WebSocket connection problems
-
-### Using Prompts
-
-Simply ask Claude about your debugging need, and it will automatically use the appropriate prompt:
-
-```
-You: "Help me debug CORS issues"
-Assistant: *Uses debug_cors_issues prompt to guide the analysis*
-
-You: "Check if there are any memory leaks"
-Assistant: *Uses debug_memory_leaks prompt to search for patterns*
-```
-
-## Development
+### From Source
 
 ```bash
-# Run in development mode
-npm run dev
-
-# Run tests
-npm test
-
-# Lint code
-npm run lint
-
-# Format code
-npm run format
-```
-
-## Architecture
-
-```
-browser-connect-mcp/
-├── src/
-│   ├── index.ts          # MCP server entry point
-│   ├── types/            # TypeScript type definitions
-│   ├── utils/
-│   │   ├── browser-manager.ts    # CDP connection management
-│   │   ├── search-utils.ts       # Search and filter utilities
-│   │   └── logger.ts             # Logging configuration
-│   └── tools/            # Individual tool implementations
-├── dist/                 # Compiled JavaScript
-└── package.json
+git clone https://github.com/perception30/browser-connect-mcp.git
+cd browser-connect-mcp
+npm install
+npm run build
 ```
 
 ## Troubleshooting
 
-### Chrome won't launch
-- Ensure Chrome is installed in the default location
-- Or provide the path: `browser_launch({ executablePath: "/path/to/chrome" })`
+### "Claude can't connect to my browser"
+- Make sure you've restarted Claude Desktop after updating the configuration
+- Try asking "Launch a new Chrome browser for debugging"
+- Check that Chrome/Chromium is installed on your system
 
-### Can't connect to tabs
-- Make sure Chrome was launched with `--remote-debugging-port=9222`
-- Or use `browser_launch()` to let the MCP handle it automatically
+### "No data is appearing"
+- Ensure the web page is loaded and active
+- Try refreshing the page after Claude connects
+- Ask Claude to "Check the connection status"
 
-### No data appearing
-- Ensure you've connected to a tab using `browser_connect()`
-- Check that the website is generating console/network activity
-- Try refreshing the page after connecting
+### "Chrome won't launch"
+- The MCP server will try to find Chrome automatically
+- If it fails, make sure Chrome or Chromium is installed
+- On Linux, you might need to install `chromium-browser`
 
-## Security Considerations
+## How It Works
 
-- Browser debugging port is only accessible from localhost by default
-- No data is persisted - all data is cleared on disconnect
-- Sensitive data in console/network logs can be detected by security_scan()
-- Use the security audit prompt for comprehensive security checks
+When you ask Claude to debug your website, this MCP server:
+
+1. **Launches or connects to Chrome** with debugging protocol enabled
+2. **Establishes a debugging session** using Chrome DevTools Protocol
+3. **Monitors console and network events** in real-time
+4. **Provides Claude with debugging data** to analyze and help you
+5. **Maintains context** throughout your debugging conversation
+
+All of this happens automatically - you just describe what you need!
+
+## Privacy & Security
+
+- **Local Only**: All debugging happens on your local machine
+- **No Data Storage**: Information is only kept during the active session
+- **Secure by Default**: Uses Chrome DevTools Protocol securely
+- **Permission-Based**: Claude asks before performing actions
 
 ## Contributing
 
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/perception30/browser-connect-mcp/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/perception30/browser-connect-mcp/discussions)
+- **Documentation**: [Wiki](https://github.com/perception30/browser-connect-mcp/wiki)
 
 ## License
 
@@ -517,6 +339,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Built on the [Model Context Protocol](https://modelcontextprotocol.io)
-- Uses [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/)
-- Inspired by the need for better AI-assisted debugging tools
+- Built on the [Model Context Protocol](https://modelcontextprotocol.io) by Anthropic
+- Powered by [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/)
+- Inspired by developers who need better debugging tools
+
+---
+
+**Made with ❤️ for developers who want to debug with AI assistance**
