@@ -1,6 +1,6 @@
 {
   "name": "browser-connect-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server for browser DevTools integration - debug console logs and network requests with AI assistance",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
