@@ -206,6 +206,20 @@ const tools: Tool[] = [
           type: 'string',
           description: 'Path to Chrome/Chromium executable (auto-detected if not provided)',
         },
+        url: {
+          type: 'string',
+          description: 'URL to open in the browser (e.g., http://localhost:3000)',
+        },
+        debugPort: {
+          type: 'number',
+          description: 'Chrome DevTools debugging port (default: 9222)',
+          default: 9222,
+        },
+        useDefaultBrowser: {
+          type: 'boolean',
+          description: 'Open URL in system default browser instead of Chrome with debugging',
+          default: false,
+        },
       },
     },
   },
@@ -376,6 +390,40 @@ const tools: Tool[] = [
       required: ['tabId'],
     },
   },
+  {
+    name: 'debug_localhost',
+    description: 'Launch browser with a localhost URL and automatically connect for debugging',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        port: {
+          type: 'number',
+          description: 'The localhost port to debug (e.g., 3000, 8080)',
+        },
+        path: {
+          type: 'string',
+          description: 'Optional path after the port (e.g., "/admin")',
+          default: '/',
+        },
+        protocol: {
+          type: 'string',
+          enum: ['http', 'https'],
+          description: 'Protocol to use (default: http)',
+          default: 'http',
+        },
+        debugPort: {
+          type: 'number',
+          description: 'Chrome DevTools debugging port (default: 9222)',
+          default: 9222,
+        },
+        executablePath: {
+          type: 'string',
+          description: 'Path to Chrome/Chromium executable (auto-detected if not provided)',
+        },
+      },
+      required: ['port'],
+    },
+  },
 ];
 
 // Register tools handler
@@ -543,16 +591,35 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case 'browser_launch': {
-        const { executablePath } = args as any;
-        await browserManager.launchBrowser(executablePath);
-        return {
-          content: [
-            {
-              type: 'text',
-              text: 'Browser launched successfully with debugging enabled on port 9222',
-            },
-          ],
-        };
+        const { executablePath, url, debugPort = 9222, useDefaultBrowser = false } = args as any;
+        
+        if (useDefaultBrowser && url) {
+          // Open URL in default browser without debugging
+          await browserManager.openUrlInDefaultBrowser(url);
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `Opened ${url} in system default browser`,
+              },
+            ],
+          };
+        } else {
+          // Launch Chrome/Chromium with debugging
+          await browserManager.launchBrowser(executablePath, url, debugPort);
+          const message = url 
+            ? `Browser launched with debugging enabled on port ${debugPort} and opened ${url}`
+            : `Browser launched successfully with debugging enabled on port ${debugPort}`;
+          
+          return {
+            content: [
+              {
+                type: 'text',
+                text: message,
+              },
+            ],
+          };
+        }
       }
 
       case 'network_export_har': {
@@ -773,6 +840,74 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             },
           ],
         };
+      }
+
+      case 'debug_localhost': {
+        const { 
+          port, 
+          path = '/', 
+          protocol = 'http', 
+          debugPort = 9222,
+          executablePath 
+        } = args as any;
+        
+        // Construct the localhost URL
+        const url = `${protocol}://localhost:${port}${path}`;
+        
+        try {
+          // Launch browser with the URL
+          await browserManager.launchBrowser(executablePath, url, debugPort);
+          
+          // Wait a bit for the browser to fully start and load the page
+          await new Promise(resolve => setTimeout(resolve, 3000));
+          
+          // Get list of available tabs
+          const tabs = await browserManager.connectToBrowser('localhost', debugPort);
+          
+          // Find the tab with our URL
+          const targetTab = tabs.find(tab => 
+            tab.title?.includes(`localhost:${port}`) || 
+            tab.title?.includes(url)
+          );
+          
+          if (targetTab) {
+            // Connect to the tab
+            await browserManager.connectToTab(targetTab.id, 'localhost', debugPort);
+            
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: JSON.stringify({
+                    success: true,
+                    message: `Successfully launched and connected to ${url}`,
+                    tabId: targetTab.id,
+                    tabTitle: targetTab.title,
+                    debugPort: debugPort,
+                    tip: 'You can now use console_search, network_analyze, and other debugging tools with this tabId'
+                  }, null, 2),
+                },
+              ],
+            };
+          } else {
+            return {
+              content: [
+                {
+                  type: 'text',
+                  text: JSON.stringify({
+                    success: false,
+                    message: `Browser launched but could not find tab with URL ${url}`,
+                    availableTabs: tabs.map(t => ({ id: t.id, title: t.title })),
+                    tip: 'Try using browser_list_tabs to see available tabs and browser_connect to connect manually'
+                  }, null, 2),
+                },
+              ],
+            };
+          }
+        } catch (error) {
+          logger.error('Error in debug_localhost:', error);
+          throw error;
+        }
       }
 
       default:

@@ -1,6 +1,6 @@
 import CDP from 'chrome-remote-interface';
-import { spawn, ChildProcess } from 'child_process';
-import { tmpdir } from 'os';
+import { spawn, ChildProcess, exec } from 'child_process';
+import { tmpdir, platform } from 'os';
 import { accessSync } from 'fs';
 import logger from './logger';
 import { BrowserConnection, ConsoleMessage, NetworkRequest, NetworkResponse } from '../types';
@@ -186,7 +186,7 @@ export class BrowserManager {
     }
   }
 
-  async launchBrowser(executablePath?: string): Promise<void> {
+  async launchBrowser(executablePath?: string, url?: string, debugPort = 9222): Promise<void> {
     const chromePath = executablePath || this.findChromePath();
     
     if (!chromePath) {
@@ -194,11 +194,16 @@ export class BrowserManager {
     }
 
     const args = [
-      '--remote-debugging-port=9222',
+      `--remote-debugging-port=${debugPort}`,
       '--no-first-run',
       '--no-default-browser-check',
       '--user-data-dir=' + tmpdir() + '/browser-connect-mcp',
     ];
+
+    // Add URL if provided
+    if (url) {
+      args.push(url);
+    }
 
     this.browserProcess = spawn(chromePath, args);
     
@@ -212,11 +217,25 @@ export class BrowserManager {
 
   private findChromePath(): string | null {
     const paths = [
+      // macOS
       '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+      '/Applications/Chromium.app/Contents/MacOS/Chromium',
+      '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary',
+      '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
+      '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge',
+      // Linux
       '/usr/bin/google-chrome',
       '/usr/bin/chromium-browser',
+      '/usr/bin/chromium',
+      '/usr/bin/brave-browser',
+      '/usr/bin/microsoft-edge',
+      // Windows
       'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
       'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+      'C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe',
+      'C:\\Program Files (x86)\\BraveSoftware\\Brave-Browser\\Application\\brave.exe',
+      'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+      'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
     ];
 
     for (const path of paths) {
@@ -229,6 +248,36 @@ export class BrowserManager {
     }
 
     return null;
+  }
+
+  async openUrlInDefaultBrowser(url: string): Promise<void> {
+    const currentPlatform = platform();
+    
+    return new Promise((resolve, reject) => {
+      let command: string;
+      
+      switch (currentPlatform) {
+        case 'darwin': // macOS
+          command = `open "${url}"`;
+          break;
+        case 'win32': // Windows
+          command = `start "${url}"`;
+          break;
+        default: // Linux and others
+          command = `xdg-open "${url}"`;
+          break;
+      }
+      
+      exec(command, (error) => {
+        if (error) {
+          logger.error('Failed to open URL in default browser:', error);
+          reject(error);
+        } else {
+          logger.info(`Opened URL in default browser: ${url}`);
+          resolve();
+        }
+      });
+    });
   }
 
   async disconnectTab(tabId: string): Promise<void> {
