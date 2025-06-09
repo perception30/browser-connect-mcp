@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Debugging Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f5f5f5;
+            min-height: 200px;
+            white-space: pre-wrap;
+        }
+        .error { color: red; }
+        .success { color: green; }
+        .warning { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>Backend Debugging Test Application</h1>
+    <p>This page makes API calls to the backend server. Use browser-connect-mcp to debug both frontend and backend!</p>
+    
+    <h2>Frontend Actions</h2>
+    <button onclick="fetchUsers()">Fetch Users</button>
+    <button onclick="fetchUser(1)">Fetch User 1</button>
+    <button onclick="fetchUser(999)">Fetch Non-existent User</button>
+    <button onclick="triggerError()">Trigger Backend Error</button>
+    <button onclick="slowRequest()">Slow Request (3s)</button>
+    <button onclick="healthCheck()">Health Check</button>
+    <button onclick="generateLogs()">Generate Console Logs</button>
+    
+    <h2>Output</h2>
+    <div id="output"></div>
+
+    <script>
+        const API_URL = 'http://localhost:3001';
+        const output = document.getElementById('output');
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            output.innerHTML += `<span class="${type}">[${timestamp}] ${message}</span>\n`;
+            console[type === 'error' ? 'error' : type === 'warning' ? 'warn' : 'log'](message);
+        }
+
+        async function fetchUsers() {
+            try {
+                log('Fetching all users...');
+                const response = await fetch(`${API_URL}/api/users`);
+                const users = await response.json();
+                log(`Success! Found ${users.length} users: ${JSON.stringify(users, null, 2)}`, 'success');
+            } catch (error) {
+                log(`Error fetching users: ${error.message}`, 'error');
+            }
+        }
+
+        async function fetchUser(id) {
+            try {
+                log(`Fetching user ${id}...`);
+                const response = await fetch(`${API_URL}/api/users/${id}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log(`Success! User data: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    log(`User not found: ${JSON.stringify(data)}`, 'warning');
+                }
+            } catch (error) {
+                log(`Error fetching user: ${error.message}`, 'error');
+            }
+        }
+
+        async function triggerError() {
+            try {
+                log('Triggering backend error...');
+                const response = await fetch(`${API_URL}/api/error`);
+                const data = await response.json();
+                log(`Backend error response: ${JSON.stringify(data)}`, 'error');
+            } catch (error) {
+                log(`Network error: ${error.message}`, 'error');
+            }
+        }
+
+        async function slowRequest() {
+            try {
+                log('Making slow request (will take 3 seconds)...', 'warning');
+                const startTime = Date.now();
+                const response = await fetch(`${API_URL}/api/slow`);
+                const data = await response.json();
+                const duration = Date.now() - startTime;
+                log(`Slow request completed in ${duration}ms: ${JSON.stringify(data)}`, 'success');
+            } catch (error) {
+                log(`Error in slow request: ${error.message}`, 'error');
+            }
+        }
+
+        async function healthCheck() {
+            try {
+                log('Checking backend health...');
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                log(`Health check: ${JSON.stringify(data, null, 2)}`, 'success');
+            } catch (error) {
+                log(`Health check failed: ${error.message}`, 'error');
+            }
+        }
+
+        function generateLogs() {
+            console.log('This is a regular log message');
+            console.info('This is an info message with data:', { timestamp: new Date(), random: Math.random() });
+            console.warn('This is a warning message');
+            console.error('This is an error message', new Error('Sample error'));
+            console.debug('This is a debug message');
+            
+            log('Generated various console logs - check the browser console!', 'success');
+        }
+
+        // Log page load
+        console.log('Backend debugging test page loaded');
+        log('Page loaded. Backend API URL: ' + API_URL);
+    </script>
+</body>
+</html>

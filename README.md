@@ -5,17 +5,31 @@
 [![Node.js Version](https://img.shields.io/node/v/browser-connect-mcp.svg)](https://nodejs.org)
 [![npm downloads](https://img.shields.io/npm/dm/browser-connect-mcp.svg)](https://www.npmjs.com/package/browser-connect-mcp)
 
-A Model Context Protocol (MCP) server that enables AI assistants to connect to browser DevTools for debugging web applications. Works with any MCP-compatible tool including Claude Desktop, Claude Code, Cursor, Cline, Roo-Cline, and more!
+A Model Context Protocol (MCP) server that enables AI assistants to connect to browser DevTools and backend debuggers for comprehensive full-stack debugging. Works with any MCP-compatible tool including Claude Desktop, Claude Code, Cursor, Cline, Roo-Cline, and more!
 
 ## What is this?
 
 Browser Connect MCP gives AI assistants the ability to:
+
+**Frontend Debugging:**
 - 🚀 Launch Chrome with debugging enabled automatically
 - 🔍 Read console logs and errors from your web pages
 - 🌐 Monitor network requests and API calls
 - 📊 Analyze performance issues
 - 🔒 Scan for security vulnerabilities
-- 🤖 Provide intelligent debugging insights
+
+**Backend Debugging (NEW!):**
+- 📝 Stream and analyze backend logs in real-time
+- 🐛 Attach to Node.js debuggers for breakpoint debugging
+- 🐳 Monitor Docker container logs
+- 📁 Parse structured and unstructured log files
+- 🔍 Search and filter logs with pattern matching
+
+**AI-Powered Analysis:**
+- 🤖 Intelligent error correlation between frontend and backend
+- 💡 Root cause analysis across the full stack
+- 🎯 Performance bottleneck detection
+- 🛡️ Security vulnerability scanning
 
 All through natural conversation - no coding required!
 
@@ -123,6 +137,16 @@ This MCP server works with any tool that supports the Model Context Protocol:
 - **"Look for security vulnerabilities"**
 - **"Are there any insecure requests?"**
 
+### Backend Debugging
+
+- **"Stream logs from my Node.js server"**
+- **"Show me backend errors from server.log"**
+- **"Attach debugger to my Node.js process on port 9229"**
+- **"Monitor my Docker container logs"**
+- **"Find all database errors in the backend logs"**
+- **"Correlate frontend errors with backend logs"**
+- **"Show me slow API endpoints from backend logs"**
+
 ## Real-World Examples
 
 ### Example 1: Debugging API Errors
@@ -205,6 +229,41 @@ Security Scan Results:
 Would you like me to explain how to fix any of these issues?
 ```
 
+### Example 4: Full-Stack Debugging (NEW!)
+
+```
+You: "My users are getting 500 errors but I can't figure out why"
+
+AI: I'll help you debug this issue by examining both frontend and backend. Let me start by connecting to your browser and checking for errors.
+
+[Connects to browser and analyzes network traffic]
+
+I see multiple 500 errors from /api/checkout. Now let me check your backend logs to understand what's happening server-side.
+
+[Streams backend logs]
+
+Found the issue! Here's what's happening:
+
+Frontend (Browser):
+- POST /api/checkout returning 500 errors
+- Errors started 15 minutes ago
+- Affecting 23% of requests
+
+Backend (Server Logs):
+- Database connection pool exhausted
+- "Error: Connection timeout" in checkout handler
+- Memory usage spiking before errors
+
+Root Cause:
+Your checkout process isn't closing database connections properly, leading to connection pool exhaustion under load.
+
+Quick Fix:
+Add connection.release() after your database queries in the checkout handler.
+
+Long-term Fix:
+Implement connection pooling with automatic cleanup and monitoring.
+```
+
 ## Common Debugging Workflows
 
 ### Complete Debugging Session
@@ -243,6 +302,32 @@ Your AI assistant will:
 4. Identify patterns in failures
 ```
 
+### Backend Log Analysis (NEW!)
+
+```
+You: "Analyze my server logs for errors"
+
+Your AI assistant will:
+1. Connect to your log source (file, process, or Docker)
+2. Parse and structure log entries
+3. Filter for errors and warnings
+4. Identify patterns and anomalies
+5. Correlate with frontend issues
+```
+
+### Node.js Debugging (NEW!)
+
+```
+You: "Debug my Node.js application"
+
+Your AI assistant will:
+1. Attach to Node.js debugger (--inspect)
+2. Monitor runtime errors and exceptions
+3. Analyze performance bottlenecks
+4. Track memory usage
+5. Provide optimization suggestions
+```
+
 ## Features
 
 ### 🔌 Browser Management
@@ -270,6 +355,14 @@ Your AI assistant will:
 - **Root Cause Detection**: Find the source of cascading errors
 - **Performance Recommendations**: Get optimization suggestions
 - **Security Scanning**: Detect vulnerabilities automatically
+
+### 🖥️ Backend Debugging (NEW!)
+- **Log Streaming**: Real-time log monitoring from files, processes, or containers
+- **Node.js Debugger**: Attach to Node.js processes with --inspect
+- **Log Parsing**: Automatic parsing of JSON and text log formats
+- **Pattern Matching**: Advanced filtering with regex support
+- **Docker Support**: Monitor container logs directly
+- **Process Monitoring**: Track stdout/stderr from running processes
 
 ## Alternative Installation Methods
 
@@ -344,15 +437,32 @@ Configuration varies by extension. Look for MCP server settings in the extension
 - If it fails, make sure Chrome or Chromium is installed
 - On Linux, you might need to install `chromium-browser`
 
+### "Backend debugging not working"
+- For Node.js debugging, ensure your app is started with `--inspect` flag
+- Check that log files have read permissions
+- For Docker logs, ensure Docker is running and you have permissions
+- Verify the debug port (default 9229) is not blocked by firewall
+
 ## How It Works
 
-When you ask your AI assistant to debug your website, this MCP server:
+When you ask your AI assistant to debug your application, this MCP server:
 
+**For Frontend Debugging:**
 1. **Launches or connects to Chrome** with debugging protocol enabled
 2. **Establishes a debugging session** using Chrome DevTools Protocol
 3. **Monitors console and network events** in real-time
-4. **Provides your AI assistant with debugging data** to analyze and help you
-5. **Maintains context** throughout your debugging conversation
+4. **Captures errors, performance metrics, and security issues**
+
+**For Backend Debugging:**
+1. **Connects to log sources** (files, processes, Docker containers)
+2. **Attaches to Node.js debuggers** when available
+3. **Streams and parses logs** in real-time
+4. **Correlates backend issues with frontend errors**
+
+**AI Analysis:**
+5. **Provides your AI assistant with comprehensive debugging data**
+6. **Enables intelligent analysis across the full stack**
+7. **Maintains context** throughout your debugging conversation
 
 All of this happens automatically - you just describe what you need!
 

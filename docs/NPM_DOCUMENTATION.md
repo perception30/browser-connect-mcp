@@ -210,7 +210,7 @@ The MCP server understands natural language requests. Here are examples for each
 
 ### Tools Overview
 
-The server provides 13 tools across 5 categories:
+The server provides 15 tools across 6 categories:
 
 #### Browser Management Tools
 
@@ -683,6 +683,84 @@ Assistant will:
 5. Analyze the issue when it occurs
 ```
 
+#### Backend Debugging Tools (NEW!)
+
+##### `backend_logs_stream`
+Streams and searches logs from backend applications.
+
+**Input**:
+```typescript
+{
+  source: 'file'|'process'|'docker'|'stdout'  // Log source type
+  target: string                              // File path, process ID, container ID, or command
+  filters?: {
+    level?: string[]                          // Filter by log levels
+    pattern?: string                          // Search pattern
+    regex?: boolean                           // Treat pattern as regex
+    since?: string                           // ISO timestamp to start from
+    limit?: number                           // Max logs to return (default: 1000)
+  }
+  follow?: boolean                           // Follow log in real-time
+  format?: 'json'|'text'|'auto'            // Log format (default: auto)
+}
+```
+
+**Output**:
+```typescript
+{
+  success: boolean
+  source: string
+  target: string
+  logCount: number
+  logs: Array<{
+    timestamp: string
+    level?: string
+    message: string
+    metadata?: object
+    source: string
+    raw: string
+  }>
+  streaming: boolean
+}
+```
+
+##### `backend_debugger_attach`
+Attaches to a Node.js process for debugging.
+
+**Input**:
+```typescript
+{
+  host?: string      // Debug host (default: localhost)
+  port: number       // Debug port (e.g., 9229 for Node.js)
+  processId?: string // Optional process ID
+  type?: 'node'|'deno'|'chrome'  // Runtime type (default: node)
+}
+```
+
+**Output**:
+```typescript
+{
+  success: boolean
+  debugger: {
+    connected: boolean
+    target: {
+      id: string
+      title: string
+      type: string
+      url: string
+    }
+    runtime: object
+    capabilities: {
+      debugging: boolean
+      profiling: boolean
+      heapSnapshot: boolean
+      coverage: boolean
+    }
+  }
+  message: string
+}
+```
+
 ## Examples
 
 ### Example 1: Debug a React Application
@@ -745,6 +823,37 @@ AI: I'll export the network traffic as a HAR file that you can share.
 - Provide the exported data
 ```
 
+### Example 5: Backend Log Analysis (NEW!)
+
+```
+User: Analyze the errors in my server logs
+
+AI: I'll help you analyze your server logs. Let me connect to your log file and search for errors.
+
+[AI will automatically:]
+- Stream logs from your specified file
+- Filter for error-level messages
+- Parse log formats (JSON/text)
+- Identify error patterns
+- Provide insights and recommendations
+```
+
+### Example 6: Full-Stack Debugging (NEW!)
+
+```
+User: My API is returning 500 errors intermittently
+
+AI: I'll investigate this issue by examining both frontend and backend. Let me start with the browser to see the errors.
+
+[AI will automatically:]
+- Connect to your browser tab
+- Monitor network requests for 500 errors
+- Stream backend logs to find corresponding errors
+- Correlate frontend and backend issues
+- Identify the root cause
+- Suggest fixes
+```
+
 ## Troubleshooting
 
 ### Common Issues
@@ -776,6 +885,22 @@ AI: I'll export the network traffic as a HAR file that you can share.
   "executablePath": "/custom/path/to/chrome"
 }
 ```
+
+#### 5. "Cannot connect to Node.js debugger"
+
+**Cause**: Node.js not started with debugging enabled  
+**Solution**: Start your Node.js app with the `--inspect` flag:
+```bash
+node --inspect=9229 app.js
+```
+
+#### 6. "Log file not found"
+
+**Cause**: Incorrect file path or permissions  
+**Solution**: 
+1. Use absolute paths for log files
+2. Check file exists and has read permissions
+3. Ensure the process is writing logs to the expected location
 
 ### Debug Mode
 

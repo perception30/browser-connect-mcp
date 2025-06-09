@@ -18,6 +18,9 @@ import { debuggingPrompts, getPrompt, renderPrompt } from './prompts/debugging-p
 import { ErrorCorrelator } from './utils/error-correlation';
 import { SecurityScanner } from './utils/security-scanner';
 import { IntelligentLogAnalyzer } from './utils/log-analyzer';
+import { BackendManager } from './utils/backend-manager';
+import { backendLogsStream } from './tools/backend/logs-stream';
+import { backendDebuggerAttach } from './tools/backend/debugger-attach';
 import logger from './utils/logger';
 
 // Initialize browser manager
@@ -419,6 +422,96 @@ const tools: Tool[] = [
         executablePath: {
           type: 'string',
           description: 'Path to Chrome/Chromium executable (auto-detected if not provided)',
+        },
+      },
+      required: ['port'],
+    },
+  },
+  {
+    name: 'backend_logs_stream',
+    description: 'Stream and search logs from backend applications (files, processes, Docker containers)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        source: {
+          type: 'string',
+          enum: ['file', 'process', 'docker', 'stdout'],
+          description: 'Log source type',
+        },
+        target: {
+          type: 'string',
+          description: 'File path, process ID, container ID, or command',
+        },
+        filters: {
+          type: 'object',
+          properties: {
+            level: {
+              type: 'array',
+              items: {
+                type: 'string',
+                enum: ['error', 'warn', 'info', 'debug', 'trace'],
+              },
+              description: 'Filter by log levels',
+            },
+            pattern: {
+              type: 'string',
+              description: 'Text pattern to search for',
+            },
+            regex: {
+              type: 'boolean',
+              description: 'Treat pattern as regex',
+              default: false,
+            },
+            since: {
+              type: 'string',
+              description: 'ISO timestamp to start from',
+            },
+            limit: {
+              type: 'number',
+              description: 'Maximum number of logs to return',
+              default: 1000,
+            },
+          },
+        },
+        follow: {
+          type: 'boolean',
+          description: 'Follow log in real-time',
+          default: false,
+        },
+        format: {
+          type: 'string',
+          enum: ['json', 'text', 'auto'],
+          description: 'Log format',
+          default: 'auto',
+        },
+      },
+      required: ['source', 'target'],
+    },
+  },
+  {
+    name: 'backend_debugger_attach',
+    description: 'Attach to a Node.js process debugger for breakpoint debugging',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        host: {
+          type: 'string',
+          description: 'Debug host',
+          default: 'localhost',
+        },
+        port: {
+          type: 'number',
+          description: 'Debug port (e.g., 9229 for Node.js)',
+        },
+        processId: {
+          type: 'string',
+          description: 'Process ID to attach to',
+        },
+        type: {
+          type: 'string',
+          enum: ['node', 'deno', 'chrome'],
+          description: 'Runtime type',
+          default: 'node',
         },
       },
       required: ['port'],
@@ -908,6 +1001,32 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           logger.error('Error in debug_localhost:', error);
           throw error;
         }
+      }
+
+      case 'backend_logs_stream': {
+        const result = await backendLogsStream(args as any);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
+          isError: result.isError,
+        };
+      }
+
+      case 'backend_debugger_attach': {
+        const result = await backendDebuggerAttach(args as any);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
+          isError: result.isError,
+        };
       }
 
       default:

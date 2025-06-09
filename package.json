@@ -49,14 +49,19 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.5.0",
+    "@types/ws": "^8.18.1",
     "chrome-remote-interface": "^0.33.0",
     "puppeteer-core": "^21.7.0",
-    "winston": "^3.11.0"
+    "tail": "^2.2.6",
+    "winston": "^3.11.0",
+    "ws": "^8.18.2",
+    "zod": "^3.25.56"
   },
   "devDependencies": {
     "@types/chrome-remote-interface": "^0.31.0",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.5",
+    "@types/tail": "^2.2.3",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
     "eslint": "^8.56.0",
