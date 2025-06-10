@@ -39,13 +39,15 @@ All through natural conversation - no coding required!
 
 Add to your AI assistant's MCP configuration. Here are examples for popular tools:
 
+**IMPORTANT:** Due to how MCP clients handle spawning commands, you MUST use the following configuration format with `npx` as the command and the package name as an argument:
+
 **Claude Desktop** (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`, Windows: `%APPDATA%\Claude\claude_desktop_config.json`):
 ```json
 {
   "mcpServers": {
     "browser-connect": {
       "command": "npx",
-      "args": ["browser-connect-mcp"],
+      "args": ["-y", "browser-connect-mcp@0.4.1"],
       "env": {
         "LOG_LEVEL": "info"
       }
@@ -53,6 +55,8 @@ Add to your AI assistant's MCP configuration. Here are examples for popular tool
   }
 }
 ```
+
+**Note:** The `-y` flag ensures npx runs without prompting, and the version ensures you're using the latest stable release.
 
 **Cursor/Cline/Other MCP Tools**: Check your tool's documentation for MCP server configuration location.
 
@@ -405,11 +409,13 @@ npm run build
   "mcpServers": {
     "browser-connect": {
       "command": "npx",
-      "args": ["browser-connect-mcp"]
+      "args": ["-y", "browser-connect-mcp@0.4.1"]
     }
   }
 }
 ```
+
+**Important:** Always use `npx` as the command with the package name (including version) as arguments. Do NOT use the package name directly as the command - this will cause a "spawn ENOENT" error.
 
 ### Cursor IDE
 Check Cursor's MCP settings in the preferences/settings panel for adding MCP servers.
