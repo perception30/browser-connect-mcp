@@ -48,10 +48,9 @@ Model Context Protocol (MCP) is an open protocol that standardizes how AI applic
 The easiest way to use Browser Connect MCP is via npx (no installation required):
 
 ```bash
-npx browser-connect-mcp@0.4.1
+npx browser-connect-mcp
 ```
 
-**Note:** Always specify the version when using npx to ensure consistent behavior.
 
 ### Global Installation
 
@@ -91,7 +90,7 @@ Add the server to your AI assistant's MCP configuration:
   "mcpServers": {
     "browser-connect-mcp": {
       "command": "npx",
-      "args": ["-y", "browser-connect-mcp@0.4.1"]
+      "args": ["-y", "browser-connect-mcp"]
     }
   }
 }
@@ -99,7 +98,6 @@ Add the server to your AI assistant's MCP configuration:
 
 **Note:** 
 - The `-y` flag ensures npx runs without prompting (recommended by MCP)
-- Always specify the version to ensure stability
 - Do NOT use the package name directly as the command - this will cause a "spawn ENOENT" error
 
 For global installation:

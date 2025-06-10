@@ -9,7 +9,7 @@
      "mcpServers": {
        "browser-connect-mcp": {
          "command": "npx",
-         "args": ["-y", "browser-connect-mcp@0.4.1"]
+         "args": ["-y", "browser-connect-mcp"]
        }
      }
    }

@@ -47,7 +47,7 @@ Add to your AI assistant's MCP configuration. Here are examples for popular tool
   "mcpServers": {
     "browser-connect": {
       "command": "npx",
-      "args": ["-y", "browser-connect-mcp@0.4.1"],
+      "args": ["-y", "browser-connect-mcp"],
       "env": {
         "LOG_LEVEL": "info"
       }
@@ -56,7 +56,7 @@ Add to your AI assistant's MCP configuration. Here are examples for popular tool
 }
 ```
 
-**Note:** The `-y` flag ensures npx runs without prompting, and the version ensures you're using the latest stable release.
+**Note:** The `-y` flag ensures npx runs without prompting. NPM will automatically use the latest version.
 
 **Cursor/Cline/Other MCP Tools**: Check your tool's documentation for MCP server configuration location.
 
@@ -415,7 +415,7 @@ npm run build
 }
 ```
 
-**Important:** Always use `npx` as the command with the package name (including version) as arguments. Do NOT use the package name directly as the command - this will cause a "spawn ENOENT" error.
+**Important:** Always use `npx` as the command with the package name as arguments. Do NOT use the package name directly as the command - this will cause a "spawn ENOENT" error.
 
 ### Cursor IDE
 Check Cursor's MCP settings in the preferences/settings panel for adding MCP servers.
